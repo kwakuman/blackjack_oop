@@ -44,34 +44,55 @@ def main():
 
         print(f"You have {playerHand}")
         print(f"Banker has {CPUHand}")
-        # TODO evaluate the results of the round
-        if playerHand.value() > 21:
+        # evaluate the results of the round
+        playerScore = playerHand.value()
+        CPUScore = CPUHand.value()
+        if playerScore > 21:
             print("You are bust, you lose.")
             sys.exit()
-        if CPUHand.value() > 21:
+        if CPUScore > 21:
             print("The banker is bust, you win.")
             sys.exit()
-        if playerHand.value() == CPUHand.value():
+        if playerScore == CPUScore:
             print("It's a tie.")
             sys.exit()
-        if playerHand.value() > CPUHand.value():
+        if playerScore > CPUScore:
             print("You have a higher score, you win.")
             sys.exit()
-        if CPUHand.value() > playerHand.value():
+        if CPUScore > playerScore:
             print("Banker has a higher score, you lose.")
             sys.exit()
 
+class BlackjackDeckException(Exception):
+    pass
 
 class BlackjackDeck:
     def __init__(self):
         """Create deck of cards for one game of Blackjack."""
+        self.SUITS = ["clubs", "diamonds", "spades", "hearts"]
+        self.RANKS = [
+            "ace",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6",
+            "7",
+            "8",
+            "9",
+            "10",
+            "jack",
+            "queen",
+            "king",
+        ]
         self.cards = list()
         self.build()
 
     def build(self):
         """Builds new deck of cards."""
-        for suit in cards.SUITS:
-            for rank in cards.RANKS:
+        # set suits and ranks the deck will be made of
+        for suit in self.SUITS:
+            for rank in self.RANKS:
                 self.cards.append(cards.Card(suit, rank))
 
     def drawCard(self):
@@ -80,16 +101,14 @@ class BlackjackDeck:
         return self.cards.pop(self.cards.index(drawedCard))
 
     def __repr__(self):
-        return f"{self.__class__.__qualname__}(Deck of {len(self.cards)}/{len(cards.SUITS) * len(cards.RANKS)} cards.)"
+        return f"{self.__class__.__qualname__}(Deck of {len(self.cards)}/{len(self.SUITS) * len(self.RANKS)} cards.)"
 
     def __str__(self):
-        return f"Deck of cards. {len(self.cards)}/{len(cards.SUITS) * len(cards.RANKS)} left."
-
+        return f"Deck of cards. {len(self.cards)}/{len(self.SUITS) * len(self.RANKS)} left."
 
 class Hand:
     def __init__(self, deck):
         """Creates a player's hand with two cards from the game card deck."""
-
         self.cards = list()
         self.cards.append(deck.drawCard())
         self.cards.append(deck.drawCard())
@@ -98,23 +117,31 @@ class Hand:
         """Adds a card from deck of cards to hand."""
         self.cards.append(deck.drawCard())
 
-    def aceInHand(self):
-        """Returns True if player has an Ace in Hand otherwise returns false."""
+    def acesInHand(self):
+        """Returns number of Aces(int) in the Hand object."""
+        numberOfAces = 0
         for card in self.cards:
             if card.rank == "ace":
-                return True
-            else:
-                return False
+                numberOfAces += 1
+        return numberOfAces
 
     def value(self):
         """Returns a value of all the cards in hand."""
         handValue = 0
         for card in self.cards:
             handValue += card.blackjackValue()
+        aces = self.acesInHand()
+        # check if there are aces to be counted as one instead of eleven
+        while aces > 0:
+            if handValue > 21:
+                handValue -= 10
+                aces -= 1
+            if handValue < 21:
+                break
         return handValue
 
     def showFirstCard(self):
-        """Shows cards in hand in human readable form."""
+        """Shows first card in a Hand object in human readable form."""
         return self.cards[0]
 
     def __str__(self):

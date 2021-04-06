@@ -1,5 +1,6 @@
 # cards.py, a module containing cards and deck to play card games with
 
+# sett suits and ranks that cards can be made from
 SUITS = ["clubs", "diamonds", "spades", "hearts"]
 RANKS = ["ace", "2", "3", "4", "5", "6", "7", "8", "9", "10", "jack", "queen", "king"]
 
