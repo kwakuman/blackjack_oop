@@ -1,9 +1,5 @@
 # cards.py, a module containing cards and deck to play card games with
 
-# sett suits and ranks that cards can be made from
-SUITS = ["clubs", "diamonds", "spades", "hearts"]
-RANKS = ["ace", "2", "3", "4", "5", "6", "7", "8", "9", "10", "jack", "queen", "king"]
-
 
 class CardException(Exception):
     """The card module raises this when the module is misused."""
@@ -12,6 +8,24 @@ class CardException(Exception):
 
 
 class Card:
+    # sett suits and ranks that cards can be made from
+    SUITS = ["clubs", "diamonds", "spades", "hearts"]
+    RANKS = [
+        "ace",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "10",
+        "jack",
+        "queen",
+        "king",
+    ]
+
     def __init__(self, suit, rank):
         """Create a card object with given suit and rank"""
         self.suit = suit.lower()
@@ -31,15 +45,15 @@ class Card:
 
     @property
     def suit(self):
-        """Returns the suit of the card object."""
+        """Returns the suit (of the card object."""
         return self._suit
 
     @suit.setter
     def suit(self, value):
-        if value.lower() not in SUITS:
+        if value.lower() not in self.SUITS:
             raise CardException(
                 "A card can only be one of four suits "
-                + str(SUITS)
+                + str(self.SUITS)
                 + " not a "
                 + value.__class__.__qualname__
             )
@@ -52,10 +66,10 @@ class Card:
 
     @rank.setter
     def rank(self, value):
-        if value.lower() not in RANKS:
+        if value.lower() not in self.RANKS:
             raise CardException(
                 "A card must be one of allowed ranks "
-                + str(RANKS)
+                + str(self.RANKS)
                 + "not a "
                 + value.__class__.__qualname__
             )

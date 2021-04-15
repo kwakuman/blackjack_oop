@@ -1,3 +1,5 @@
+# blackjack.py, a game of blackjack against a CPU
+
 import random
 import sys
 import cards
@@ -5,15 +7,16 @@ import cards
 
 def main():
     print(
-        'Hello, let\'s play some blackjack, shall we? (type in "yes" to play or "quit" to quit.'
+        'Hello, let\'s play some blackjack, shall we? (type in "yes" to play or "quit" to quit.)'
     )
-    # playerChoice = input('> ')
-    playerChoice = "y"
-    if playerChoice.lower().startswith("q"):
+    playerChoice = input("> ").lower()
+    # playerChoice = "y"
+    while playerChoice not in ["yes", "quit"]:
+        print('Please answer "yes" to play the game or "quit" to end the programme.')
+        playerChoice = input("> ").lower()
+    if playerChoice.startswith("q"):
         print("Ok, bye bye then")
         sys.exit()
-    elif not playerChoice.lower().startswith("y"):
-        print('Please answer "yes" to play the game or "quit" to end the programme.')
     # create a deck of cards
     deck = BlackjackDeck()
     # create player's and CPU's hand
@@ -31,15 +34,15 @@ def main():
         if response.lower() not in ["yes", "no"]:
             continue
         if response.lower().startswith("y"):
-            playerHand.drawCard(deck)
+            playerHand.addCard(deck.drawCard())
             continue
 
         # let CPU draw cards, if it wishes to
         if playerHand.value() > CPUHand.value():  # if player has higher score than CPU
             while (
-                playerHand.value() <= 21 and CPUHand.value() <= 21
+                playerHand.value() <= 21 and CPUHand.value() < 21
             ):  # player is winning at the moment
-                CPUHand.drawCard(deck)
+                CPUHand.addCard(deck.drawCard())
                 print(f"CPU has drawed {CPUHand.cards[-1]}")
 
         print(f"You have {playerHand}")
@@ -63,8 +66,10 @@ def main():
             print("Banker has a higher score, you lose.")
             sys.exit()
 
+
 class BlackjackDeckException(Exception):
     pass
+
 
 class BlackjackDeck:
     def __init__(self):
@@ -106,6 +111,7 @@ class BlackjackDeck:
     def __str__(self):
         return f"Deck of cards. {len(self.cards)}/{len(self.SUITS) * len(self.RANKS)} left."
 
+
 class Hand:
     def __init__(self, deck):
         """Creates a player's hand with two cards from the game card deck."""
@@ -113,9 +119,9 @@ class Hand:
         self.cards.append(deck.drawCard())
         self.cards.append(deck.drawCard())
 
-    def drawCard(self, deck):
+    def addCard(self, card):
         """Adds a card from deck of cards to hand."""
-        self.cards.append(deck.drawCard())
+        self.cards.append(card)
 
     def acesInHand(self):
         """Returns number of Aces(int) in the Hand object."""
